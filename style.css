@@ -1,0 +1,104 @@
+:root{
+  --gap: 1px;
+  --header-height: 56px;
+  --side-label-width: 64px;
+  --topbar-bg: #0b5cff;
+  --cell-bg: #ffffff;
+  --grid-line: #ccc;
+  --accent: #0b5cff;
+  --danger: #e04b4b;
+}
+
+/* 全体 */
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:system-ui,-apple-system,"Segoe UI","Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif}
+body{display:flex;flex-direction:column;background:#f3f5f7;color:#111}
+
+/* 上部バー */
+.topbar{
+  height:var(--header-height);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 12px;
+  background:linear-gradient(180deg,var(--topbar-bg),#0a4bd6);
+  color:#fff;
+  flex:0 0 var(--header-height);
+}
+.title{margin:0;font-size:1.1rem}
+.btn{
+  background:#fff;color:var(--topbar-bg);
+  border:none;padding:8px 12px;border-radius:6px;font-weight:600;cursor:pointer;
+}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.danger{background:var(--danger);color:#fff}
+
+/* メイン領域：高さは画面全体から上部バーを引いた残り */
+main{flex:1;display:flex;align-items:stretch;justify-content:center;padding:8px}
+
+/* タイムテーブル全体 */
+.timetable{
+  width:100%;
+  height:100%;
+  max-width:1200px;
+  display:grid;
+  grid-template-columns: var(--side-label-width) repeat(6,1fr); /* 6列: 月〜土 */
+  grid-template-rows: 40px repeat(7, 1fr); /* 7時限 */
+  gap: var(--gap);
+  background:var(--grid-line);
+  border-radius:8px;
+  overflow:hidden;
+}
+
+/* 曜日ヘッダ（1行目） */
+.header-cell{
+  background:linear-gradient(180deg,#fff,#f7f9fc);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;padding:6px;
+}
+
+/* 左上空白セル */
+.corner{
+  background:#fafafa;display:flex;align-items:center;justify-content:center;font-weight:600;
+}
+
+/* 時限ラベル（左列） */
+.period-cell{
+  background:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;
+}
+
+/* 各コマ */
+.slot{
+  background:var(--cell-bg);
+  padding:6px;
+  min-height:0; /* for flex children inside grid */
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+  cursor:default;
+  overflow:hidden;
+}
+.slot.editable{cursor:pointer}
+.slot .subject{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slot .meta{font-size:0.85rem;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
+
+/* モーダル */
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:1000}
+.modal[aria-hidden="false"]{display:flex}
+.modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.35)}
+.modal-panel{
+  position:relative;background:#fff;border-radius:10px;padding:18px;width:min(520px,95%);z-index:2;
+  box-shadow:0 10px 30px rgba(0,0,0,0.2)
+}
+.form-row{margin-bottom:10px}
+.form-row input{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px}
+.modal-actions{display:flex;align-items:center;margin-top:8px}
+.spacer{flex:1}
+
+/* 編集モードの視覚フィードバック */
+.timetable.editing .slot{background:#fff}
+.timetable.editing .slot.editable{outline:2px dashed rgba(11,92,255,0.18)}
+
+/* レスポンシブ：小さい縦幅のとき */
+@media (max-height:600px){
+  .timetable{grid-template-rows: 36px repeat(7, minmax(36px,1fr))}
+  .title{font-size:0.95rem}
+}
