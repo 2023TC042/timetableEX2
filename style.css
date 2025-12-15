@@ -43,7 +43,7 @@ main{flex:1;display:flex;align-items:stretch;justify-content:center;padding:8px}
   max-width:1200px;
   display:grid;
   grid-template-columns: var(--side-label-width) repeat(6,1fr); /* 6列: 月〜土 */
-  grid-template-rows: 40px repeat(7, 1fr); /* 7時限 */
+  grid-template-rows: 40px repeat(6, 1fr); /* 6時限 */
   gap: var(--gap);
   background:var(--grid-line);
   border-radius:8px;
@@ -99,6 +99,6 @@ main{flex:1;display:flex;align-items:stretch;justify-content:center;padding:8px}
 
 /* レスポンシブ：小さい縦幅のとき */
 @media (max-height:600px){
-  .timetable{grid-template-rows: 36px repeat(7, minmax(36px,1fr))}
+  .timetable{grid-template-rows: 36px repeat(6, minmax(36px,1fr))}
   .title{font-size:0.95rem}
 }
