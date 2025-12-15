@@ -1,6 +1,6 @@
 // 簡易設定
 const WEEKDAYS = ['月','火','水','木','金','土']; // 6列
-const PERIODS = 7; // 1〜7時限
+const PERIODS = 6; // 1〜6時限
 const STORAGE_KEY = 'timetable-data-v1';
 
 const timetableEl = document.getElementById('timetable');
