@@ -5,8 +5,10 @@ const STORAGE_KEY = 'timetable-data-v1';
 
 const timetableEl = document.getElementById('timetable');
 const toggleBtn = document.getElementById('toggle-edit');
-const modal = document.getElementById('modal');
-const backdrop = document.getElementById('modal-backdrop');
+
+// 編集モーダル要素
+const modalEdit = document.getElementById('modal-edit');
+const backdropEdit = document.getElementById('modal-edit-backdrop');
 const form = document.getElementById('edit-form');
 const subjectInput = document.getElementById('subject');
 const roomInput = document.getElementById('room');
@@ -14,9 +16,20 @@ const timeInput = document.getElementById('time');
 const deleteBtn = document.getElementById('delete-btn');
 const cancelBtn = document.getElementById('cancel-btn');
 
+// 閲覧（チェック用）モーダル要素
+const modalView = document.getElementById('modal-view');
+const backdropView = document.getElementById('modal-view-backdrop');
+const viewSubject = document.getElementById('view-subject');
+const viewRoom = document.getElementById('view-room');
+const viewTime = document.getElementById('view-time');
+const reportsGrid = document.getElementById('reports-grid');
+const viewSaveBtn = document.getElementById('view-save');
+const viewCloseBtn = document.getElementById('view-close');
+
 let editing = false;
-let data = {}; // { "月-1": {subject, room, time}, ... }
+let data = {}; // { "月-1": {subject, room, time, reports: [bool x15]}, ... }
 let activeKey = null;
+const REPORT_COUNT = 15;
 
 // 初期化
 function loadData(){
@@ -74,14 +87,17 @@ function buildGrid(){
         meta.textContent = `${item.room || ''}${item.room && item.time ? ' · ' : ''}${item.time || ''}`;
         slot.appendChild(meta);
       }else{
-        // 空セルは薄いプレースホルダにしても良い
+        // 空セルは薄いプレースホルダ
         slot.innerHTML = '<div style="color:#bbb">（空）</div>';
       }
 
-      // クリックで編集（編集モードのときのみ）
+      // クリックで編集（編集モードのときは編集モーダル、そうでなければ閲覧モーダル）
       slot.addEventListener('click', (e)=>{
-        if(!editing) return;
-        openEditor(key);
+        if(editing){
+          openEditor(key);
+        }else{
+          openViewer(key);
+        }
       });
 
       timetableEl.appendChild(slot);
@@ -101,7 +117,6 @@ function setEditing(flag){
 function updateEditingState(){
   if(editing){
     timetableEl.classList.add('editing');
-    // all slots mark editable
     timetableEl.querySelectorAll('.slot').forEach(s=>s.classList.add('editable'));
   }else{
     timetableEl.classList.remove('editing');
@@ -109,25 +124,25 @@ function updateEditingState(){
   }
 }
 
-// モーダル操作
+// --- 編集モーダル操作 ---
 function openEditor(key){
   activeKey = key;
   const item = data[key] || {};
   subjectInput.value = item.subject || '';
   roomInput.value = item.room || '';
   timeInput.value = item.time || '';
-  modal.setAttribute('aria-hidden','false');
-  modal.style.display = 'flex';
+  modalEdit.setAttribute('aria-hidden','false');
+  modalEdit.style.display = 'flex';
   subjectInput.focus();
 }
 function closeEditor(){
   activeKey = null;
-  modal.setAttribute('aria-hidden','true');
-  modal.style.display = 'none';
+  modalEdit.setAttribute('aria-hidden','true');
+  modalEdit.style.display = 'none';
   form.reset();
 }
 
-// 保存
+// 保存（編集）
 form.addEventListener('submit', (e)=>{
   e.preventDefault();
   if(!activeKey) return;
@@ -138,7 +153,10 @@ form.addEventListener('submit', (e)=>{
     // 空なら削除
     delete data[activeKey];
   }else{
+    // 既存のレポート状態があれば保持
+    const prev = data[activeKey] && data[activeKey].reports ? data[activeKey].reports : null;
     data[activeKey] = {subject, room, time};
+    if(prev) data[activeKey].reports = prev;
   }
   saveData();
   buildGrid();
@@ -154,12 +172,66 @@ deleteBtn.addEventListener('click', ()=>{
   closeEditor();
 });
 
-// キャンセル
+// キャンセル（編集モーダル）
 cancelBtn.addEventListener('click', (e)=>{
   e.preventDefault();
   closeEditor();
 });
-backdrop.addEventListener('click', closeEditor);
+backdropEdit.addEventListener('click', closeEditor);
+
+// --- 閲覧 / レポートチェックモーダル操作 ---
+function openViewer(key){
+  activeKey = key;
+  const item = data[key] || {};
+  viewSubject.textContent = item.subject || '（未設定）';
+  viewRoom.textContent = item.room || '（未設定）';
+  viewTime.textContent = item.time || '（未設定）';
+
+  // レポートグリッド生成（チェック状態は item.reports に保存）
+  reportsGrid.innerHTML = '';
+  const reports = Array.isArray(item.reports) ? item.reports : Array(REPORT_COUNT).fill(false);
+  for(let i=0;i<REPORT_COUNT;i++){
+    const idx = i + 1;
+    const div = document.createElement('label');
+    div.className = 'report-item';
+    div.title = `第${idx}回`;
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.dataset.index = i;
+    cb.checked = !!reports[i];
+    const span = document.createElement('span');
+    span.textContent = `第${idx}回`;
+    div.appendChild(cb);
+    div.appendChild(span);
+    reportsGrid.appendChild(div);
+  }
+
+  modalView.setAttribute('aria-hidden','false');
+  modalView.style.display = 'flex';
+}
+function closeViewer(){
+  activeKey = null;
+  modalView.setAttribute('aria-hidden','true');
+  modalView.style.display = 'none';
+  reportsGrid.innerHTML = '';
+}
+
+// 保存（レポートチェックの保存）
+viewSaveBtn.addEventListener('click', ()=>{
+  if(!activeKey) return;
+  const boxes = Array.from(reportsGrid.querySelectorAll('input[type="checkbox"]'));
+  const reports = boxes.map(b => !!b.checked);
+  if(!data[activeKey]) data[activeKey] = {};
+  data[activeKey].reports = reports;
+  saveData();
+  closeViewer();
+});
+
+// 閉じるボタン（保存しない）
+viewCloseBtn.addEventListener('click', ()=>{
+  closeViewer();
+});
+backdropView.addEventListener('click', closeViewer);
 
 // トグルボタン
 toggleBtn.addEventListener('click', ()=>{
@@ -171,11 +243,13 @@ loadData();
 buildGrid();
 setEditing(false);
 
-// キーボード：Escでモーダル閉じる
+// キーボード：Escでモーダル閉じる または 編集モードをOFFに
 document.addEventListener('keydown', (e)=>{
   if(e.key === 'Escape'){
-    if(modal.getAttribute('aria-hidden') === 'false'){
+    if(modalEdit.getAttribute('aria-hidden') === 'false'){
       closeEditor();
+    }else if(modalView.getAttribute('aria-hidden') === 'false'){
+      closeViewer();
     }else if(editing){
       setEditing(false);
     }
