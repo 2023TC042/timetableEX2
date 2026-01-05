@@ -85,13 +85,26 @@ main{flex:1;display:flex;align-items:stretch;justify-content:center;padding:8px}
 .modal[aria-hidden="false"]{display:flex}
 .modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.35)}
 .modal-panel{
-  position:relative;background:#fff;border-radius:10px;padding:18px;width:min(520px,95%);z-index:2;
+  position:relative;background:#fff;border-radius:10px;padding:18px;width:min(640px,95%);z-index:2;
   box-shadow:0 10px 30px rgba(0,0,0,0.2)
 }
 .form-row{margin-bottom:10px}
 .form-row input{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px}
 .modal-actions{display:flex;align-items:center;margin-top:8px}
 .spacer{flex:1}
+
+/* 閲覧モーダル内 */
+.view-info{margin-bottom:12px}
+.view-info div{margin:6px 0}
+.reports{margin-top:8px}
+.reports-grid{
+  display:grid;
+  grid-template-columns: repeat(5,1fr);
+  gap:8px;
+  margin-top:8px;
+}
+.report-item{display:flex;align-items:center;gap:8px;padding:6px;border:1px solid #eee;border-radius:6px;background:#fafafa}
+.report-item input{width:18px;height:18px}
 
 /* 編集モードの視覚フィードバック */
 .timetable.editing .slot{background:#fff}
