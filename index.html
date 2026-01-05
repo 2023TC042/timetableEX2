@@ -16,11 +16,11 @@
     <div id="timetable" class="timetable"></div>
   </main>
 
-  <!-- モーダル -->
-  <div id="modal" class="modal" aria-hidden="true">
-    <div class="modal-backdrop" id="modal-backdrop"></div>
-    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <h2 id="modal-title">コマを編集</h2>
+  <!-- 編集モーダル -->
+  <div id="modal-edit" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" id="modal-edit-backdrop"></div>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-edit-title">
+      <h2 id="modal-edit-title">コマを編集</h2>
       <form id="edit-form">
         <div class="form-row">
           <label>科目名<input id="subject" type="text" /></label>
@@ -38,6 +38,31 @@
           <button type="submit" id="save-btn" class="btn primary">保存</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- 閲覧／レポートチェック用モーダル -->
+  <div id="modal-view" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" id="modal-view-backdrop"></div>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-view-title">
+      <h2 id="modal-view-title">コマ情報とレポートチェック</h2>
+
+      <div class="view-info">
+        <div><strong>科目名：</strong><span id="view-subject">（未設定）</span></div>
+        <div><strong>教室：</strong><span id="view-room">（未設定）</span></div>
+        <div><strong>講義時間：</strong><span id="view-time">（未設定）</span></div>
+      </div>
+
+      <div class="reports">
+        <h3>レポートチェック</h3>
+        <div id="reports-grid" class="reports-grid"></div>
+      </div>
+
+      <div class="modal-actions" style="margin-top:12px">
+        <div class="spacer"></div>
+        <button id="view-close" class="btn">閉じる</button>
+        <button id="view-save" class="btn primary">保存</button>
+      </div>
     </div>
   </div>
 
