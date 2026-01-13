@@ -14,7 +14,6 @@
 html,body{height:100%;margin:0;font-family:system-ui,-apple-system,"Segoe UI","Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif}
 body{display:flex;flex-direction:column;background:#f3f5f7;color:#111}
 
-/* 上部バー */
 .topbar{
   height:var(--header-height);
   display:flex;
@@ -33,11 +32,8 @@ body{display:flex;flex-direction:column;background:#f3f5f7;color:#111}
 .btn.primary{background:var(--accent);color:#fff}
 .btn.danger{background:var(--danger);color:#fff}
 
-/* メイン領域：高さは画面全体から上部バーを引いた残り */
 main{flex:1;display:flex;align-items:stretch;justify-content:center;padding:8px}
 
-/* タイムテーブル全体
-   - 高さはヘッダを差し引いた最大値にして内部でスクロール可能に */
 .timetable{
   width:100%;
   height:100%;
@@ -53,24 +49,21 @@ main{flex:1;display:flex;align-items:stretch;justify-content:center;padding:8px}
   padding:4px;
 }
 
-/* 曜日ヘッダ（1行目） */
+
 .header-cell{
   background:linear-gradient(180deg,#fff,#f7f9fc);
   display:flex;align-items:center;justify-content:center;
   font-weight:700;padding:6px;
 }
 
-/* 左上空白セル */
 .corner{
   background:#fafafa;display:flex;align-items:center;justify-content:center;font-weight:600;
 }
 
-/* 時限ラベル（左列） */
 .period-cell{
   background:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;
 }
 
-/* 各コマ */
 .slot{
   background:var(--cell-bg);
   padding:6px;
@@ -85,7 +78,6 @@ main{flex:1;display:flex;align-items:stretch;justify-content:center;padding:8px}
 .slot .subject{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .slot .meta{font-size:0.85rem;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
 
-/* モーダル */
 .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:1000}
 .modal[aria-hidden="false"]{display:flex}
 .modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.35)}
@@ -98,11 +90,9 @@ main{flex:1;display:flex;align-items:stretch;justify-content:center;padding:8px}
 .modal-actions{display:flex;align-items:center;margin-top:8px}
 .spacer{flex:1}
 
-/* 閲覧モーダル内 */
 .view-info{margin-bottom:12px}
 .view-info div{margin:6px 0}
 .reports{margin-top:8px}
-/* レスポンシブに列数を変える */
 .reports-grid{
   display:grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -112,33 +102,28 @@ main{flex:1;display:flex;align-items:stretch;justify-content:center;padding:8px}
 .report-item{display:flex;align-items:center;gap:8px;padding:6px;border:1px solid #eee;border-radius:6px;background:#fafafa}
 .report-item input{width:18px;height:18px}
 
-/* 編集モードの視覚フィードバック */
 .timetable.editing .slot{background:#fff}
 .timetable.editing .slot.editable{outline:2px dashed rgba(11,92,255,0.18)}
 
-/* レスポンシブ：小さい縦長（モバイル）向け */
 @media (max-width: 760px), (orientation: portrait) {
   :root{
     --side-label-width: 48px;
   }
 
-  /* タイムテーブルを「カード」風の縦積みに切り替え */
   .timetable{
-    display:block; /* DOM の流れをそのまま縦に並べる */
+    display:block;
     max-width: 720px;
     padding:6px;
     border-radius:0;
     background:transparent;
   }
 
-  /* ヘッダや左ラベルは非表示（カード化のため） */
   .timetable .header-cell,
   .timetable .period-cell,
   .timetable .corner{
     display:none;
   }
 
-  /* 各コマをカード化 */
   .timetable .slot{
     display:flex;
     flex-direction:column;
@@ -151,7 +136,6 @@ main{flex:1;display:flex;align-items:stretch;justify-content:center;padding:8px}
     min-height: 48px;
   }
 
-  /* slot の先頭に曜日+時限を出す（data-day と data-period を利用） */
   .timetable .slot::before{
     content: attr(data-day) " " attr(data-period) "限";
     display:block;
@@ -164,7 +148,6 @@ main{flex:1;display:flex;align-items:stretch;justify-content:center;padding:8px}
   .slot .subject{font-size:1rem}
   .slot .meta{font-size:0.9rem;color:#666}
 
-  /* モーダルはほぼ全画面にしてスクロール可能 */
   .modal-panel{
     width: calc(100% - 12px);
     height: calc(100vh - 12px);
@@ -174,7 +157,6 @@ main{flex:1;display:flex;align-items:stretch;justify-content:center;padding:8px}
   }
 }
 
-/* レスポンシブ：狭い高さの場合の微調整 */
 @media (max-height:600px){
   .timetable{grid-template-rows: 36px repeat(6, minmax(36px,1fr))}
   .title{font-size:0.95rem}
