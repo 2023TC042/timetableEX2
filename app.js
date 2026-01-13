@@ -74,6 +74,9 @@ function buildGrid(){
       const slot = document.createElement('div');
       slot.className = 'slot';
       slot.dataset.key = key;
+      // add day/period attributes for responsive CSS
+      slot.dataset.day = d;
+      slot.dataset.period = p;
 
       const item = data[key];
       if(item && (item.subject || item.room || item.time)){
@@ -88,7 +91,10 @@ function buildGrid(){
         slot.appendChild(meta);
       }else{
         // 空セルは薄いプレースホルダ
-        slot.innerHTML = '<div style="color:#bbb">（空）</div>';
+        const placeholder = document.createElement('div');
+        placeholder.style.color = '#bbb';
+        placeholder.textContent = '（空）';
+        slot.appendChild(placeholder);
       }
 
       // クリックで編集（編集モードのときは編集モーダル、そうでなければ閲覧モーダル）
